@@ -35,7 +35,9 @@ int main() {
     Camera2D camera;
     camera.setProjection(SCR_WIDTH, SCR_HEIGHT);
     Shader flatShader;
-    flatShader.loadFromFile("D:/VSC_projects/2D_Platformer/2DPlatformer/shaders/flatShaderVert.glsl", "D:/VSC_projects/2D_Platformer/2DPlatformer/shaders/flatShaderFrag.glsl");
+    
+    // TODO: add path utilities
+    flatShader.loadFromFile("../shaders/flatShaderVert.glsl", "../shaders/flatShaderFrag.glsl");
     std::unique_ptr<Mesh2D> box = std::make_unique<MBox2D>(0.5f, 0.5f);
 
     float phase = 0.0f;
