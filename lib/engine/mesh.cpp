@@ -1,5 +1,7 @@
 #include <engine/mesh.hpp>
 
+#include <glm/gtc/type_ptr.hpp>
+
 // ---------- Mesh
 
 Mesh2D::Mesh2D(GLuint _nVerts, GLuint _nIndices) {
@@ -49,10 +51,22 @@ void Mesh2D::pushTriangle(GLuint _a, GLuint _b, GLuint _c) {
     indices.push_back(_c);
 }
 
-void Mesh2D::render() {
+void Mesh2D::render(const Shader& _shader, const Camera2D& _camera) {
+    glUseProgram(_shader.getShader());
+
+    GLuint locProj = glGetUniformLocation(_shader.getShader(), "projection");
+    GLuint locView = glGetUniformLocation(_shader.getShader(), "view");
+    GLuint locModel = glGetUniformLocation(_shader.getShader(), "model");
+
+    if (locProj != -1) glUniformMatrix4fv(locProj, 1, GL_FALSE, glm::value_ptr(_camera.getProjectionMat()));
+    if (locView != -1) glUniformMatrix4fv(locView, 1, GL_FALSE, glm::value_ptr(_camera.getViewMat()));
+    if (locModel != -1) glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(getMatrix()));
+
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
+
+    glUseProgram(0);
 }
 
 // ---------- MBox2D

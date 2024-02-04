@@ -4,8 +4,11 @@
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <gen/transform.hpp>
+#include <engine/shader.hpp>
+#include <engine/camera.hpp>
 
-class Mesh2D {
+class Mesh2D: public Transform2D {
 public:
     Mesh2D(GLuint _nVerts = 0, GLuint _nIndices = 0);
     ~Mesh2D();
@@ -27,7 +30,7 @@ protected:
     virtual void initVerts() = 0;
 
 public:
-    virtual void render();
+    virtual void render(const Shader& _shader, const Camera2D& _camera);
 };
 
 class MBox2D: public Mesh2D {

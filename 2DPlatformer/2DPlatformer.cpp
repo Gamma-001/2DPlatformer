@@ -1,10 +1,14 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <engine/mesh.hpp>
-#include <engine/shader.hpp>
-
 #include <iostream>
 #include <memory>
+#include <cmath>
+#include <chrono>
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <engine/camera.hpp>
+#include <engine/shader.hpp>
+#include <engine/mesh.hpp>
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -28,19 +32,33 @@ int main() {
         return -1;
     }
 
-    std::unique_ptr<Mesh2D> box = std::make_unique<MBox2D>();
+    Camera2D camera;
+    camera.setProjection(SCR_WIDTH, SCR_HEIGHT);
     Shader flatShader;
-    flatShader.loadFromFile("./shaders/flatShaderFrag.glsl", "./shaders/flatShaderVert.glsl");
+    flatShader.loadFromFile("D:/VSC_projects/2D_Platformer/2DPlatformer/shaders/flatShaderVert.glsl", "D:/VSC_projects/2D_Platformer/2DPlatformer/shaders/flatShaderFrag.glsl");
+    std::unique_ptr<Mesh2D> box = std::make_unique<MBox2D>(0.5f, 0.5f);
 
+    float phase = 0.0f;
+    auto curTime = std::chrono::high_resolution_clock::now();
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(flatShader.getShader());
-        box->render();
+        box->render(flatShader, camera);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        {
+            auto nextTime = std::chrono::high_resolution_clock::now();
+            float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(nextTime - curTime).count() / 1e6;
+            box->setPosition(glm::vec3(sin(phase), 0.0f, 0.0f));
+            box->rotate(deltaTime * 3.1416 / 2.0f);
+            phase += deltaTime * 3.1416f / 2.0f;
+            if (phase >= 3.1416 * 2.0f) phase = 0.0f;
+        }
+
+        curTime = std::chrono::high_resolution_clock::now();
     }
 
     glfwTerminate();

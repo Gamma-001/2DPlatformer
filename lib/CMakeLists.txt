@@ -1,4 +1,5 @@
 add_library(
     engine 
-    "engine/mesh.cpp" "engine/shader.cpp"
+    "gen/transform.cpp" 
+    "engine/mesh.cpp" "engine/shader.cpp" "engine/camera.cpp"
 )

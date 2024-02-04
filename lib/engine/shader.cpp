@@ -38,12 +38,13 @@ void Shader::loadFromFile(const std::string& _pathVert, const std::string& _path
         ssFrag << fragSource.rdbuf();
         vertSource.close();
         fragSource.close();
-
+    
         vertStr = ssVert.str();
         fragStr = ssFrag.str();
     }
     catch(std::ifstream::failure &e) {
         std::cout << "ERROR_SHADER_READ\n" << e.what() << '\n';
+        return;
     }
 
     compileShader(vertShader, vertStr.c_str());
