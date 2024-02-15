@@ -8,10 +8,12 @@
 #include <engine/shader.hpp>
 #include <engine/camera.hpp>
 
-class Mesh2D: public Transform2D {
+class Mesh2D {
 public:
     Mesh2D(GLuint _nVerts = 0, GLuint _nIndices = 0);
     ~Mesh2D();
+
+    virtual void render(const Shader& _shader, const Camera2D& _camera, Transform2D& _transform);
 
 protected:
     GLuint VBO;
@@ -25,12 +27,10 @@ protected:
 
     void pushVertex(GLfloat _x, GLfloat _y, GLfloat _z);
     void pushTriangle(GLuint _a, GLuint _b, GLuint _c);
+    void setUV(int _index, GLfloat _x, GLfloat _y);
 
     // initial mesh loading / calculation
     virtual void initVerts() = 0;
-
-public:
-    virtual void render(const Shader& _shader, const Camera2D& _camera);
 };
 
 class MBox2D: public Mesh2D {

@@ -1,45 +1,50 @@
 #pragma once
 
 #include <type_traits>
+#include <cstdint>
+#include <array>
+#include <algorithm>
 
-namespace detail {
-    template <class T> 
-    class Color3Ref {
-    public:
-        inline Color3Ref(T _r = 0, T _g = 0, T _b = 0): r(_r), g(_g), b(_b) {}
-
-        T r, g, b;
-    };
-
-    template <class T>
-    class Color4Ref {
-    public:
-        inline Color4Ref(T _r = 0, T _g = 0, T _b = 0, T _a = 0): r(_r), g(_g), b(_b), a(_a) {}
-
-        T r, g, b, a;
-    };
-}
-
-template <class T, bool useAlpha = true>
-class Color: public std::conditional_t<useAlpha, detail::Color4Ref<T>, detail::Color3Ref<T>> {
-    static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>, "T must be an integral or floating type");
+template <class T, int TChannel>
+class Color {
+    static_assert((std::is_integral_v<T> || std::is_floating_point_v<T>) && TChannel >= 1 && TChannel <= 4);
 
 public:
-    template <bool enable = useAlpha, typename = typename std::enable_if_t<enable && useAlpha>>
-    Color(T _r = 0, T _g = 0, T _b = 0, T _a = 0);
+    Color();
+    template <typename... Targs>
+    Color(Targs... _args);
 
-    template <bool enable = !useAlpha, typename = typename std::enable_if_t<enable && !useAlpha>>
-    Color(T _r = 0, T _g = 0, T _b = 0);
+    inline T& r() { return mData[0]; }
+    template <bool hasGreen = (TChannel >= 2), typename = typename std::enable_if_t<hasGreen && (hasGreen == (TChannel >= 2))>>
+    inline T& g() { return mData[1]; }
+    template <bool hasBlue = (TChannel >= 3), typename = typename std::enable_if_t<hasBlue && (hasBlue == (TChannel >= 3))>>
+    inline T& b() { return mData[2]; }
+    template <bool hasAlpha = (TChannel >= 4), typename = typename std::enable_if_t<hasAlpha && (hasAlpha == (TChannel >= 4))>>
+    inline T& a() { return mData[3]; }
 
-    using ColorRef = std::conditional<useAlpha, detail::Color4Ref<T>, detail::Color3Ref<T>>::type;
+    inline T getIndex(int i) const { return mData[i]; }
+    inline void setIndex(int i, T _val) {
+        if (i >= 0 && i < TChannel) mData[i] = _val; 
+    }
+
+private:
+    std::array <T, TChannel> mData;
 };
 
-template <class T, bool useAlpha>
-template <bool enable, typename>
-Color<T, useAlpha>::Color(T _r, T _g, T _b, T _a)
-:ColorRef(_r, _g, _b, _a) {}
+template <class T, int TChannel>
+Color<T, TChannel>::Color() {
+    std::fill(mData.begin(), mData.end(), static_cast<T>(0));
+}
 
-template <class T, bool useAlpha>
-template <bool enable, typename>
-Color<T, useAlpha>::Color(T _r, T _g, T _b)
-:ColorRef(_r, _g, _b) {}
+template <class T, int TChannel>
+template <typename... Targs>
+Color<T, TChannel>::Color(Targs... _args) {
+    static_assert(sizeof...(Targs) == TChannel);
+
+    mData = std::array <T, TChannel> { _args... };
+}
+
+typedef Color<float, 4>     Color_FRGBA;
+typedef Color<float, 3>     Color_FRGB;
+typedef Color<uint8_t, 4>   Color_URGBA;
+typedef Color<uint8_t, 3>   Color_URGB;

@@ -6,12 +6,16 @@
 #include <sstream>
 #include <memory>
 
-Shader::Shader() {
-    shaderProgram = glCreateProgram();
-}
+Shader::Shader()
+:mShaderProgram(glCreateProgram()) {}
 
 Shader::~Shader() {
-    glDeleteProgram(shaderProgram);
+    glDeleteProgram(mShaderProgram);
+}
+
+void Shader::setInt(const std::string& _name, int _val) {
+    GLuint location = glGetUniformLocation(mShaderProgram, _name.c_str());
+    glUniform1i(location, _val);
 }
 
 void Shader::loadFromFile(const std::string& _pathVert, const std::string& _pathFrag) {
@@ -51,16 +55,16 @@ void Shader::loadFromFile(const std::string& _pathVert, const std::string& _path
     compileShader(fragShader, fragStr.c_str());
 
     // link the shaders
-    glAttachShader(shaderProgram, vertShader);
-    glAttachShader(shaderProgram, fragShader);
-    glLinkProgram(shaderProgram);
+    glAttachShader(mShaderProgram, vertShader);
+    glAttachShader(mShaderProgram, fragShader);
+    glLinkProgram(mShaderProgram);
     {
         GLint success;
         GLchar infoLog[512];
 
-        glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+        glGetProgramiv(mShaderProgram, GL_LINK_STATUS, &success);
         if (!success) {
-            glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
+            glGetProgramInfoLog(mShaderProgram, 512, nullptr, infoLog);
             std::cout << "ERROR_SHADER_LINK\n" << infoLog << '\n';
         }
     }
