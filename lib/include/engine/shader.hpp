@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <memory>
 
@@ -10,7 +11,7 @@ public:
     Shader();
     ~Shader();
 
-    virtual void loadFromFile(const std::string& _pathVert, const std::string& _pathFrag);
+    virtual void loadFromFile(const std::filesystem::path& _pathVert, const std::filesystem::path& _pathFrag);
 
     inline GLuint getID() const { return mShaderProgram; }
     inline void use() const { glUseProgram(mShaderProgram); }

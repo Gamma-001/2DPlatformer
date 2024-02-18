@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 
 #include <gen/color.hpp>
+#include <gen/path.hpp>
 #include <engine/camera.hpp>
 #include <engine/shader.hpp>
 #include <engine/mesh.hpp>
@@ -51,9 +52,12 @@ int main() {
     std::unique_ptr<Shader> flatShader(new Shader());
     std::unique_ptr<Tex2D_URGB> sampleTex(new Tex2D_URGB());
 
-    // TODO: add path utilities
-    sampleTex->loadFromFile("../resources/textures/brick.png");
-    flatShader->loadFromFile("../shaders/flatShaderVert.glsl", "../shaders/flatShaderFrag.glsl");
+    sampleTex->loadFromFile(path::root()/"resources"/"textures"/"brick.png");
+    flatShader->loadFromFile(
+        path::root()/"shaders"/"flatShaderVert.glsl", 
+        path::root()/"shaders"/"flatShaderFrag.glsl"
+    );
+
     Sprite sprite(std::make_unique<MBox2D>(0.5f, 0.5f), flatShader.get());
     sprite.addTexture(sampleTex->getID());
 

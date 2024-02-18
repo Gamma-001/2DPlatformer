@@ -18,8 +18,9 @@ void Shader::setInt(const std::string& _name, int _val) {
     glUniform1i(location, _val);
 }
 
-void Shader::loadFromFile(const std::string& _pathVert, const std::string& _pathFrag) {
-    if (!_pathVert.size() || !_pathFrag.size()) throw std::invalid_argument("source paths cannot be empty");
+void Shader::loadFromFile(const std::filesystem::path& _pathVert, const std::filesystem::path& _pathFrag) {
+    if (!std::filesystem::exists(_pathVert)) throw std::invalid_argument("Invalid Path! " + _pathVert.string());
+    if (!std::filesystem::exists(_pathFrag)) throw std::invalid_argument("Invalid Path! " + _pathFrag.string());
 
     GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -47,7 +48,7 @@ void Shader::loadFromFile(const std::string& _pathVert, const std::string& _path
         fragStr = ssFrag.str();
     }
     catch(std::ifstream::failure &e) {
-        std::cout << "ERROR_SHADER_READ\n" << e.what() << '\n';
+        std::cout << "ERROR_SHADER_READ " << _pathFrag << " "  << _pathVert << "\n" << e.what() << '\n';
         return;
     }
 

@@ -39,7 +39,7 @@ class Texture2D: public Texture2DRef<T> {
 public:
     Texture2D();
 
-    void loadFromFile(const std::string& _path);
+    void loadFromFile(const std::filesystem::path& _path);
     void fromSolidColor(int _width, int _height, Color<T, TChannel> _color);
 
 protected:
@@ -53,11 +53,11 @@ template <class T, int TChannel>
 Texture2D<T, TChannel>::Texture2D(): Texture2DRef<T>() {}
 
 template <class T, int TChannel>
-void Texture2D<T, TChannel>::loadFromFile(const std::string& _path) {
+void Texture2D<T, TChannel>::loadFromFile(const std::filesystem::path& _path) {
     if (!std::filesystem::exists(_path)) throw std::invalid_argument("Invalid Path!");
 
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *rawData = stbi_load(reinterpret_cast<const char*>(_path.c_str()), &(super::mWidth), &(super::mHeight), nullptr, TChannel);
+    unsigned char *rawData = stbi_load(_path.string().c_str(), &(super::mWidth), &(super::mHeight), nullptr, TChannel);
     if (rawData == nullptr) throw std::invalid_argument(stbi_failure_reason());
 
     super::mData = std::vector<T> { rawData, rawData + super::mWidth * super::mHeight * TChannel };
