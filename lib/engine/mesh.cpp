@@ -64,20 +64,22 @@ void Mesh2D::setUV(int _index, GLfloat _x, GLfloat _y) {
     vertices[_pos + 1] = _y;
 }
 
-void Mesh2D::render(const Shader& _shader, const Camera2D& _camera, Transform2D& _transform) {
+void Mesh2D::render(const Shader& _shader, const Camera2D& _camera, Transform2D& _transform, bool _screenSpace) {
     GLuint locProj = glGetUniformLocation(_shader.getID(), "projection");
     GLuint locView = glGetUniformLocation(_shader.getID(), "view");
     GLuint locModel = glGetUniformLocation(_shader.getID(), "model");
 
-    if (locProj != -1) glUniformMatrix4fv(locProj, 1, GL_FALSE, glm::value_ptr(_camera.getProjectionMat()));
-    if (locView != -1) glUniformMatrix4fv(locView, 1, GL_FALSE, glm::value_ptr(_camera.getViewMat()));
-    if (locModel != -1) glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(_transform.getMatrix()));
+    glm::mat4 matIdentity = glm::mat4(1.0f);
+    if (locProj != -1) 
+        glUniformMatrix4fv(locProj, 1, GL_FALSE, glm::value_ptr(_screenSpace ? matIdentity : _camera.getProjectionMat()));
+    if (locView != -1) 
+        glUniformMatrix4fv(locView, 1, GL_FALSE, glm::value_ptr(_screenSpace ? matIdentity : _camera.getViewMat()));
+    if (locModel != -1) 
+        glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(_screenSpace ? matIdentity : _transform.getMatrix()));
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
-
-    glUseProgram(0);
 }
 
 // ---------- MBox2D

@@ -8,7 +8,7 @@ Sprite::Sprite(std::unique_ptr <Mesh2D> _mesh, Shader* _shader)
 :mMesh(std::move(_mesh))
 ,mShader(_shader) {}
 
-void Sprite::render(const Camera2D& _camera) {
+void Sprite::render(const Camera2D& _camera, bool _screenSpace) {
     if (!mShader || !mMesh) return;
 
     mShader->use();
@@ -17,7 +17,8 @@ void Sprite::render(const Camera2D& _camera) {
         glBindTexture(GL_TEXTURE_2D, mTextures[i]);
         mShader->setInt("texture" + std::to_string(i), 0);
     }
-    mMesh->render(*mShader, _camera, *this);
+    mMesh->render(*mShader, _camera, *this, _screenSpace);
+    mShader->discard();
 }
 
 void Sprite::addTexture(GLuint _texture) {

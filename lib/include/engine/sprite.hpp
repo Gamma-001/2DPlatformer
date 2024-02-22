@@ -16,7 +16,7 @@ public:
     Sprite();
     Sprite(std::unique_ptr <Mesh2D> _mesh, Shader* _shader);
 
-    void render(const Camera2D& _camera);
+    void render(const Camera2D& _camera, bool _screenSpace = false);
     void addTexture(GLuint _texture);
 
 private:

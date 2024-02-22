@@ -13,7 +13,7 @@ public:
     Mesh2D(GLuint _nVerts = 0, GLuint _nIndices = 0);
     ~Mesh2D();
 
-    virtual void render(const Shader& _shader, const Camera2D& _camera, Transform2D& _transform);
+    virtual void render(const Shader& _shader, const Camera2D& _camera, Transform2D& _transform, bool _screenSpace = false);
 
 protected:
     GLuint VBO;
