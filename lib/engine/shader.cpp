@@ -5,12 +5,18 @@
 #include <fstream>
 #include <sstream>
 #include <memory>
+#include <cassert>
 
 Shader::Shader()
 :mShaderProgram(glCreateProgram()) {}
 
+Shader::Shader(const Shader& _other)
+:mShaderProgram(_other.getID())
+,isCopy(true) {}
+
 Shader::~Shader() {
-    glDeleteProgram(mShaderProgram);
+    // in case of a copy, only the original shader should call deleteProgram
+    if (!isCopy) glDeleteProgram(mShaderProgram);
 }
 
 void Shader::setInt(const std::string& _name, int _val) {
@@ -19,6 +25,8 @@ void Shader::setInt(const std::string& _name, int _val) {
 }
 
 void Shader::loadFromFile(const std::filesystem::path& _pathVert, const std::filesystem::path& _pathFrag) {
+    assert(isCopy);
+
     if (!std::filesystem::exists(_pathVert)) throw std::invalid_argument("Invalid Path! " + _pathVert.string());
     if (!std::filesystem::exists(_pathFrag)) throw std::invalid_argument("Invalid Path! " + _pathFrag.string());
 

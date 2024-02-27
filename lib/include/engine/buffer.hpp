@@ -12,6 +12,8 @@ public:
     inline const GLsizei getWidth() const { return mWidth; }
     inline const GLsizei getHeight() const { return mHeight; }
 
+    void resize(int _width, int _height);
+
     void init();
     void use(bool _depthTest = true);
     void discard();

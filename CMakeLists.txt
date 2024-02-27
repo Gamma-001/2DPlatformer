@@ -11,6 +11,7 @@ include_directories(
     "${CMAKE_SOURCE_DIR}/vendor"
     "${CMAKE_SOURCE_DIR}/2DPlatformer"
     "${CMAKE_SOURCE_DIR}/lib/include"
+    "${CMAKE_SOURCE_DIR}/2DPlatformer/include"
 )
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -19,8 +20,9 @@ else()
     link_directories("${CMAKE_SOURCE_DIR}/vendor/glfw/build/src")
 endif()
 
-add_executable(2D-Platformer ${CMAKE_SOURCE_DIR}/2DPlatformer/2DPlatformer.cpp 
+add_executable(2D-Platformer ${CMAKE_SOURCE_DIR}/2DPlatformer/main.cpp 
                      ${CMAKE_SOURCE_DIR}/vendor/glad/glad.c)
-target_link_libraries(2D-Platformer glfw3 engine)
+target_link_libraries(2D-Platformer glfw3 engine game)
 
 add_subdirectory(lib)
+add_subdirectory(2DPlatformer)

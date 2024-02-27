@@ -1,6 +1,7 @@
 #include <engine/buffer.hpp>
 
 #include <stdexcept>
+#include <cassert>
 
 FrameBuffer::FrameBuffer()
 :mWidth(0)
@@ -14,7 +15,14 @@ FrameBuffer::FrameBuffer(GLsizei _width, GLsizei _height)
     glGenRenderbuffers(1, &mRBO);
 }
 
+FrameBuffer::~FrameBuffer() {
+    glDeleteFramebuffers(1, &mFBO);
+    glDeleteRenderbuffers(1, &mRBO);
+}
+
 void FrameBuffer::init() {
+    assert(mWidth != 0 && mHeight != 0);
+
     glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
 
     glBindTexture(GL_TEXTURE_2D, mTexColor);
@@ -46,7 +54,9 @@ void FrameBuffer::discard() {
     glDisable(GL_DEPTH_TEST);
 }
 
-FrameBuffer::~FrameBuffer() {
-    glDeleteFramebuffers(1, &mFBO);
-    glDeleteRenderbuffers(1, &mRBO);
+void FrameBuffer::resize(int _width, int _height) {
+    mWidth = _width;
+    mHeight = _height;
+
+    init();
 }

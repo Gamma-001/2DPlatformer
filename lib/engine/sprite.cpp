@@ -2,11 +2,15 @@
 
 Sprite::Sprite()
 :mMesh(nullptr)
-,mShader(nullptr) {}
+,mShader(nullptr) {
+    mTextures.reserve(8);
+}
 
-Sprite::Sprite(std::unique_ptr <Mesh2D> _mesh, Shader* _shader)
+Sprite::Sprite(std::unique_ptr<Mesh2D> _mesh, std::unique_ptr<Shader> _shader)
 :mMesh(std::move(_mesh))
-,mShader(_shader) {}
+,mShader(std::move(_shader)) {
+    mTextures.reserve(8);
+}
 
 void Sprite::render(const Camera2D& _camera, bool _screenSpace) {
     if (!mShader || !mMesh) return;
@@ -21,7 +25,11 @@ void Sprite::render(const Camera2D& _camera, bool _screenSpace) {
     mShader->discard();
 }
 
-void Sprite::addTexture(GLuint _texture) {
-    if (mTextures.size() >= 32) return;
-    mTextures.push_back(_texture);
+void Sprite::setTexture(int _index, GLuint _texture) {
+    assert(mShader != nullptr);
+
+    if (_index >= 0 && _index < 32) {
+        if (_index >= mTextures.size()) mTextures.resize(_index + 1);
+        mTextures[_index] = _texture;
+    }
 }

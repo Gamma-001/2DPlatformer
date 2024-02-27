@@ -15,8 +15,8 @@
 template <class T>
 class Texture2DRef {
 public:
-    Texture2DRef();
-    explicit Texture2DRef(GLuint _texture);
+    explicit Texture2DRef(int _channels);
+    Texture2DRef(GLuint _texture, int _channels);
     ~Texture2DRef();
 
     inline const GLuint getID() const { return mTexture; }
@@ -26,22 +26,25 @@ protected:
 
     int mWidth;
     int mHeight;
+    int mChannels;
     std::vector<T> mData;
     GLuint mTexture;
 };
 
 template <class T>
-Texture2DRef<T>::Texture2DRef()
+Texture2DRef<T>::Texture2DRef(int _channels)
 :mWidth(0)
-,mHeight(0) {
+,mHeight(0)
+,mChannels(_channels) {
     glGenTextures(1, &mTexture);
 }
 
 template <class T>
-Texture2DRef<T>::Texture2DRef(GLuint _texture)
+Texture2DRef<T>::Texture2DRef(GLuint _texture, int _channels)
 :mWidth(0)
-,mHeight(0),
-mTexture(_texture) {}
+,mHeight(0)
+,mChannels(_channels)
+,mTexture(_texture) {}
 
 template <class T>
 Texture2DRef<T>::~Texture2DRef() {
@@ -66,11 +69,11 @@ private:
 };
 
 template <class T, int TChannel>
-Texture2D<T, TChannel>::Texture2D(): Texture2DRef<T>() {}
+Texture2D<T, TChannel>::Texture2D(): Texture2DRef<T>(TChannel) {}
 
 template <class T, int TChannel>
 Texture2D<T, TChannel>::Texture2D(GLuint _texture, int _width, int _height)
-:Texture2DRef<T>(_texture) {
+:Texture2DRef<T>(_texture, TChannel) {
     super::mWidth = _width;
     super::mHeight = _height;
 }

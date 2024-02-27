@@ -14,13 +14,24 @@
 class Sprite: public Transform2D {
 public:
     Sprite();
-    Sprite(std::unique_ptr <Mesh2D> _mesh, Shader* _shader);
+    Sprite(std::unique_ptr<Mesh2D> _mesh, std::unique_ptr<Shader> _shader);
 
     void render(const Camera2D& _camera, bool _screenSpace = false);
-    void addTexture(GLuint _texture);
+    void setTexture(int _index, GLuint _texture);
+
+    inline void setMesh(std::unique_ptr<Mesh2D> _mesh);
+    inline void setShader(std::unique_ptr<Shader> _shader); 
 
 private:
     std::unique_ptr<Mesh2D> mMesh;
+    std::unique_ptr<Shader> mShader;
     std::vector<GLuint> mTextures;
-    Shader* mShader;
 };
+
+void Sprite::setMesh(std::unique_ptr<Mesh2D> _mesh) {
+    mMesh = std::move(_mesh);
+}
+
+void Sprite::setShader(std::unique_ptr<Shader> _shader) {
+    mShader = std::move(_shader);
+}
