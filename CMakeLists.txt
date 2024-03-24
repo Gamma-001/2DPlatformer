@@ -20,8 +20,10 @@ else()
     link_directories("${CMAKE_SOURCE_DIR}/vendor/glfw/build/src")
 endif()
 
-add_executable(2D-Platformer ${CMAKE_SOURCE_DIR}/2DPlatformer/main.cpp 
-                     ${CMAKE_SOURCE_DIR}/vendor/glad/glad.c)
+add_executable(2D-Platformer 
+    ${CMAKE_SOURCE_DIR}/2DPlatformer/main.cpp 
+    ${CMAKE_SOURCE_DIR}/vendor/glad/glad.c
+)
 target_link_libraries(2D-Platformer glfw3 engine game)
 
 add_subdirectory(lib)

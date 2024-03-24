@@ -36,7 +36,8 @@ void FrameBuffer::init() {
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mWidth, mHeight);
     glFramebufferRenderbuffer(GL_RENDERBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, mRBO);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    GLuint bufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (bufferStatus != GL_FRAMEBUFFER_COMPLETE) {
         throw std::runtime_error("Framebuffer is not complete");
     }
 

@@ -3,8 +3,7 @@
 #include <string>
 
 #ifdef WIN32
-#include <winbase.h>
-#include <winnt.h>
+#include <windows.h>
 #endif
 
 namespace fs = std::filesystem;

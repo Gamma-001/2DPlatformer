@@ -8,7 +8,8 @@
 #include <cassert>
 
 Shader::Shader()
-:mShaderProgram(glCreateProgram()) {}
+:mShaderProgram(glCreateProgram())
+,isCopy(false) {}
 
 Shader::Shader(const Shader& _other)
 :mShaderProgram(_other.getID())
@@ -25,7 +26,7 @@ void Shader::setInt(const std::string& _name, int _val) {
 }
 
 void Shader::loadFromFile(const std::filesystem::path& _pathVert, const std::filesystem::path& _pathFrag) {
-    assert(isCopy);
+    assert(!isCopy);
 
     if (!std::filesystem::exists(_pathVert)) throw std::invalid_argument("Invalid Path! " + _pathVert.string());
     if (!std::filesystem::exists(_pathFrag)) throw std::invalid_argument("Invalid Path! " + _pathFrag.string());

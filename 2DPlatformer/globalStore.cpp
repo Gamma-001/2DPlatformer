@@ -14,7 +14,7 @@ decltype(GlobalStoreSingleton::sShaders) GlobalStoreSingleton::sShaders;
 
 void GlobalStoreSingleton::init() {
     if (sInitialized) {
-        std::cout << "global store already initialized, calling initialized again";
+        std::cout << "Global store already initialized, calling initialize again";
         return;
     }
 

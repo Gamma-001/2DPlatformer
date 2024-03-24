@@ -32,7 +32,7 @@ public:
 
 protected:
     virtual void init() = 0;
-    virtual void renderLoop(float _deltaTime) = 0;
+    virtual void render(float _deltaTime) = 0;
     virtual void onResize() = 0;
 
     virtual void renderToWindow();

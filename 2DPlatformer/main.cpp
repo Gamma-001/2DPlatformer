@@ -6,6 +6,8 @@
 #include <memory>
 #include <cmath>
 #include <chrono>
+#include <utility>
+#include <thread>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -32,7 +34,7 @@ void MainWindow::init() {
     mCharacter.setTexture(0, mCharacterTex->getID());
 }
 
-void MainWindow::renderLoop(float _deltaTime) {
+void MainWindow::render(float _deltaTime) {
     static float phase = 0.0f;
     
     mFrameBuffer->use();
@@ -51,15 +53,11 @@ void MainWindow::renderLoop(float _deltaTime) {
     renderToWindow();
 }
 
-void MainWindow::onResize() {
-
-}
-
 int main() {
-    glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwInit();
 
     MainWindow mainWindow(1000, 800);
     mainWindow.createWindow("2D Platformer");
@@ -76,6 +74,7 @@ int main() {
     glFrontFace(GL_CW);
 
     GlobalStoreSingleton::init();
+
     mainWindow.createResources(GlobalStoreSingleton::getShader("defaultFlat"));
     mainWindow.init();
 
@@ -85,10 +84,10 @@ int main() {
         float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(curTime - time).count() / 1e6;
         time = curTime;
 
-        mainWindow.renderLoop(deltaTime);
+        mainWindow.render(deltaTime);
 
         glfwSwapBuffers(mainWindow.getWindowHandle());
-        glfwPollEvents(); // TODO: handle events on a different thread
+        glfwPollEvents();
     }
 
     glfwTerminate();
